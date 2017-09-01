@@ -1,0 +1,32 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CE37EE0E1D649E6DEA15A564881E485A29AD787E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "e3b49d33-c220-e111-bec0-00195b2f7f43++4823" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "CE37EE0E1D649E6DEA15A564881E485A29AD787E" : 9223372036854775807,
+    "e3b49d33-c220-e111-bec0-00195b2f7f43++4823" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "0D0A6B5E-B8E3-44D4-86DD-3A6BF520CE94",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "CE37EE0E1D649E6DEA15A564881E485A29AD787E" : "sender_iphone\/",
+    "e3b49d33-c220-e111-bec0-00195b2f7f43++4823" : "sender_iphone\/SENDER\/SENDER\/Classes\/Encoder\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "SENDER",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "SENDER\/SENDER.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git.corezoid.com:sender\/sender_iphone",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CE37EE0E1D649E6DEA15A564881E485A29AD787E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/10.1.206.55\/apple",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "e3b49d33-c220-e111-bec0-00195b2f7f43++4823"
+    }
+  ]
+}
