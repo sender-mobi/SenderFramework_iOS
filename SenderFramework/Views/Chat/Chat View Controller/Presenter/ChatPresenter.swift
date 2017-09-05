@@ -88,4 +88,8 @@ class ChatPresenter: ChatPresenterProtocol {
     func closeChat() {
         self.delegate?.chatModuleDidFinish()
     }
+
+    func setChatSettingsEnabled(_ enabled: Bool) {
+        self.router?.setChatSettingsDisplayingEnabled(enabled)
+    }
 }

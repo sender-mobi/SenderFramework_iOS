@@ -10,7 +10,6 @@
 #import "SenderRequestBuilder.h"
 #import "SecGenerator.h"
 #import "NSString+WebService.h"
-
 #import "ServerFacade.h"
 #import "SenderNotifications.h"
 #import "ParamsFacade.h"

@@ -8,7 +8,6 @@
 
 #import "TermsConditionsViewController.h"
 #import "PBConsoleConstants.h"
-
 #import <SenderFramework/SenderFramework-Swift.h>
 
 @interface TermsConditionsViewController ()

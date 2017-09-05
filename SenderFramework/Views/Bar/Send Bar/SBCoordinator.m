@@ -7,7 +7,6 @@
 //
 
 #import "SBCoordinator.h"
-
 #import "ParamsFacade.h"
 #import "SBItemView.h"
 #import "UIView+subviews.h"

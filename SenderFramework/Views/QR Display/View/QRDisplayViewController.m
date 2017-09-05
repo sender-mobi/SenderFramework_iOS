@@ -10,7 +10,6 @@
 #import "SenderQRCodeGenerator.h"
 #import "PBConsoleConstants.h"
 #import "ServerFacade.h"
-
 #import <SenderFramework/SenderFramework-Swift.h>
 
 @interface QRDisplayViewController ()

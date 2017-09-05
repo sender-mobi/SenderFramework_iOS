@@ -14,7 +14,6 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "CoreDataFacade.h"
 #import "CellWithWebView.h"
-
 #import "SenderNotifications.h"
 #import "ServerFacade.h"
 #import "ConsoleCaclulator.h"

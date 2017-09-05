@@ -25,7 +25,6 @@
 #import "ImageCellView.h"
 #import "VideoCellView.h"
 #import "AudioCellView.h"
-
 #import "FileManager.h"
 #import "Message.h"
 #import "UIImage+Resize.h"
@@ -264,6 +263,7 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
     if ([(NSObject *)self.presenter respondsToSelector:@selector(viewWasLoaded)])
         [self.presenter viewWasLoaded];
 
+    [self updateActiveStateOfChat];
     [self customizeNavigationBarAppearance];
     [self updateNavigationBar];
     [self updateChatBackground];
@@ -289,6 +289,11 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
 
     if (self.hidesSendBar)
         self.inputFieldHeight.constant = 0.0f;
+}
+
+- (BOOL)isChatActive:(Dialog *)chat
+{
+    return !(chat.isGroup && (chat.chatState == ChatStateInactive || chat.chatState == ChatStateRemoved));
 }
 
 - (void)createScrollToBottomButton
@@ -429,6 +434,8 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
     }
 
     _historyDialog.unreadCount = @0;
+    if (_historyDialog)
+        [[SenderCore sharedCore].interfaceUpdater chatsWereChanged:@[_historyDialog]];
 
     self.navigationController.interactivePopGestureRecognizer.enabled = !rightPanelVisible;
 
@@ -575,8 +582,6 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
         }
     }
 
-    _historyDialog.unreadCount = @0;
-
     UIButton * menuButtonRaw = [UIButton buttonWithType:UIButtonTypeSystem];
     menuButtonRaw.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
     [menuButtonRaw setImage:[UIImage imageFromSenderFrameworkNamed:@"_menu"] forState:UIControlStateNormal];
@@ -617,6 +622,14 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
     r = [r hasPrefix:@"+"] ? r : [@"+" stringByAppendingString:r];
     NSString * phoneUrl = [@"tel://" stringByAppendingString:r];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneUrl]];
+}
+
+- (void)updateActiveStateOfChat
+{
+    if ([self isChatActive:self.historyDialog])
+        [self activateChat];
+    else
+        [self deactivateChat];
 }
 
 - (void)addSendBarToView
@@ -684,6 +697,7 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
             [self updateChatBackground];
             [self initialMessagesLoadWithCompletionHandler:nil];
             [self addSendBarToView];
+            [self updateActiveStateOfChat];
         }
     }
 
@@ -775,11 +789,17 @@ static NSString * FormViewCellIdentifier = @"FormViewCell";
     [self endEditing];
     self.inputPanel.hidden = YES;
     [self hideRightPanel];
+    self.navigationItem.rightBarButtonItem = nil;
+    if ([(NSObject *)self.presenter respondsToSelector:@selector(setChatSettingsEnabled:)])
+        [self.presenter setChatSettingsEnabled:NO];
 }
 
 - (void)activateChat
 {
     self.inputPanel.hidden = NO;
+    self.navigationItem.rightBarButtonItem = [self createRightBarButton];
+    if ([(NSObject *)self.presenter respondsToSelector:@selector(setChatSettingsEnabled:)])
+        [self.presenter setChatSettingsEnabled:YES];
 }
 
 - (void)removeExtraViews

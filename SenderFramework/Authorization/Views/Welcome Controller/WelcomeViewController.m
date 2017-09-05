@@ -9,7 +9,6 @@
 #import "BitcoinWallet.h"
 #import "CoreDataFacade.h"
 #import "WelcomeViewController.h"
-
 #import "ServerFacade.h"
 #import "CoreDataFacade.h"
 #import "PBConsoleConstants.h"

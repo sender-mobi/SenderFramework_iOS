@@ -141,6 +141,7 @@
 - (void)startUpdatingTableWithMessages:(NSArray<Message*>*)messages;
 - (void)prepareForDealloc;
 - (void)buildMessage:(id<MessageObject>)message;
+- (void)updateActiveStateOfChat;
 - (void)updateNavigationBar;
 - (void)createScrollToBottomButton;
 

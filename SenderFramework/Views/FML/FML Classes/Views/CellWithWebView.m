@@ -7,7 +7,6 @@
 //
 
 #import "CellWithWebView.h"
-
 #import "SenderNotifications.h"
 
 @implementation CellWithWebView

@@ -8,7 +8,6 @@
 
 #import "PBChekBoxSelectView.h"
 #import "PBCheckBoxModel.h"
-
 #import "MainConteinerModel.h"
 
 @implementation PBChekBoxSelectView

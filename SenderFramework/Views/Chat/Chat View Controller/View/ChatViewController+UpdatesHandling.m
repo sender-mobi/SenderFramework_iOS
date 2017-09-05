@@ -8,7 +8,6 @@
 #import "PBConsoleConstants.h"
 #import "ServerFacade.h"
 #import "MessagesGap.h"
-
 #import <SenderFramework/SenderFramework-Swift.h>
 #import "Owner.h"
 #import "GapMessage.h"
@@ -543,10 +542,8 @@
                 BOOL needUpdateBackground = [self needsUpdateChatBackgroundWithNewImageURL:chat.imageURL];
                 if (needUpdateBackground)
                     [self updateChatBackground];
-                if (chat.chatState == ChatStateInactive)
-                    [self deactivateChat];
-                else
-                    [self activateChat];
+
+                [self updateActiveStateOfChat];
 
                 BOOL shouldReloadKeys = [self needsReloadEncryptedMessagesWithNewGroupChatKey:chat.encryptionKey
                                                                                      keysData:chat.oldGroupKeysData];

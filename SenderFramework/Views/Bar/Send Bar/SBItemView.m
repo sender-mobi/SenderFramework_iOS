@@ -8,7 +8,6 @@
 
 #import "SBItemView.h"
 #import "ParamsFacade.h"
-
 #import "CoreDataFacade.h"
 #import "ServerFacade.h"
 #import <SDWebImage/UIButton+WebCache.h>

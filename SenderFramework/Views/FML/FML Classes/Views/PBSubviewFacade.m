@@ -16,7 +16,6 @@
 #import "SenderNotifications.h"
 #import "PBImageView.h"
 #import "ChatViewController.h"
-
 #import "ECCWorker.h"
 #import <SenderFramework/SenderFramework-Swift.h>
 #import "Owner.h"
@@ -610,8 +609,11 @@ NSString * const GotoGoolgeAuth = @"GotoGoolgeAuth";
             }
             actionField = @"";
 
+            NSMutableDictionary * outData = [[NSMutableDictionary alloc] init];
+            if (self.viewModel.name)
+                outData[self.viewModel.name] = self.viewModel.val;
             if (autoSubmit)
-                [self submitOnchangeAction:nil];
+                [self submitOnchangeAction:[outData copy]];
         }
     }
     self.entityPickerModule = nil;

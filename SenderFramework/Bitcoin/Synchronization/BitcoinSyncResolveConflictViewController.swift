@@ -90,7 +90,7 @@ class BitcoinSyncResolveConflictViewController: BitcoinSyncResolveConflictScreen
         super.viewDidAppear(animated)
         tableView.beginUpdates()
         let firstRowIndexPath = IndexPath(row: 0, section: 0)
-        self.tableView.selectRow(at: firstRowIndexPath, animated: false, scrollPosition: .none)
+        tableView.selectRow(at: firstRowIndexPath, animated: false, scrollPosition: .none)
         self.tableView(tableView, didSelectRowAt: firstRowIndexPath)
         tableView.endUpdates()
     }

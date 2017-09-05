@@ -7,7 +7,6 @@
 //
 
 #import "ProgressView.h"
-
 #import "PBConsoleConstants.h"
 
 @interface ProgressView ()

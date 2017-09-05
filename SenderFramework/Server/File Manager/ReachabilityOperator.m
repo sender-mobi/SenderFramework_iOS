@@ -9,7 +9,6 @@
 #import "ReachabilityOperator.h"
 
 
-
 static ReachabilityOperator * operator;
 
 @implementation ReachabilityOperator

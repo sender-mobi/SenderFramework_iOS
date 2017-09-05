@@ -9,7 +9,6 @@
 #import "FileOperator.h"
 #import "File.h"
 #import "FileDownloadInfo.h"
-
 #import "NSDictionaryToURLString.h"
 #import "SenderRequestBuilder.h"
 #import "ParamsFacade.h"

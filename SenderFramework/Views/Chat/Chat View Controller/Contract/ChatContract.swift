@@ -38,6 +38,8 @@ import Foundation
     func handleAction(_ action: [AnyHashable: Any])
 
     func closeChat()
+    
+    func setChatSettingsEnabled(_ enabled: Bool)
 }
 
 @objc public protocol ChatRouterProtocol: class {
@@ -54,6 +56,7 @@ import Foundation
     func showChatSettings()
     func dismissChatSettings()
     func updateChatSettingsWith(chat: Dialog)
+    func setChatSettingsDisplayingEnabled(_ enabled: Bool)
 
     func presentAddMemberScreen()
     func dismissAddMemberScreen()

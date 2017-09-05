@@ -8,7 +8,6 @@
 
 #import "StickerView.h"
 
-
 @implementation StickerView
 {
     NSDictionary * allStickers;

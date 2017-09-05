@@ -59,8 +59,6 @@ public class SenderFullAuthorizationInteractor: NSObject, SenderFullAuthorizatio
 
     public func sendPhone(_ phone: String,
                           completion: SenderFullAuthorizationInteractorProtocol.AuthorizationStepCompletion?) {
-        guard self.currentStep == .phone else { return }
-
         self.server.sendPhone(phone) { (stepModel, error) in
             self.handleStepResultWithModel(stepModel: stepModel, error: error, completion: completion)
         }

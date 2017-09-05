@@ -19,7 +19,6 @@
 #import "UIView+subviews.h"
 #import "UIImageView (UITextFieldBackground).h"
 #import "UIImage+Resize.h"
-
 #import "UIAlertView+CompletionHandler.h"
 #import "DialogSetting.h"
 #import "MainButtonCell.h"

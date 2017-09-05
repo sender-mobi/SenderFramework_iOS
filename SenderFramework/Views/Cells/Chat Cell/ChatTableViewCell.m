@@ -15,7 +15,6 @@
 #import "Dialog.h"
 #import "CoreDataFacade.h"
 #import "SenderNotifications.h"
-
 #import "ServerFacade.h"
 #import "Item.h"
 #import "DialogSetting.h"

@@ -467,6 +467,7 @@ public class ChatEditManager: NSObject {
             chat.setGroupEncryptionState(encryptionState)
 
             SenderCore.shared().interfaceUpdater.chatsWereChanged([chat])
+            completionHandler?(chat, nil)
         }
     }
 

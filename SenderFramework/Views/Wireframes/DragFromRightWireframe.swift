@@ -35,6 +35,15 @@ import UIKit
 
     public private(set) weak var rootView: UIViewController?
 
+    public var isGestureRecognizerEnabled: Bool {
+        set {
+            self.panGestureRecognizer.isEnabled = newValue
+        }
+        get {
+            return self.panGestureRecognizer.isEnabled
+        }
+    }
+
     private var startViewPosition: CGFloat { return (self.rootView?.view.frame.maxX ?? 0.0) + 1.0 }
 
     public init(rootView: UIViewController) {

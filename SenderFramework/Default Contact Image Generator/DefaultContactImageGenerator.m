@@ -8,7 +8,6 @@
 
 #import "DefaultContactImageGenerator.h"
 
-
 @implementation DefaultContactImageGenerator
 
 + (NSString *)convertContactNameToImageName:(NSString *)contactName

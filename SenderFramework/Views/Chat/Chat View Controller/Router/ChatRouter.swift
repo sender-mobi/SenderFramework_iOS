@@ -98,6 +98,10 @@ class ChatRouter: ChatRouterProtocol {
         self.dragWireframe?.hideCurrentView()
     }
 
+    func setChatSettingsDisplayingEnabled(_ enabled: Bool) {
+        self.dragWireframe?.isGestureRecognizerEnabled = enabled
+    }
+
     func updateChatSettingsWith(chat: Dialog) {
         if !self.isSettingsScreenAdded { self.addChatSettingsWith(chat: chat) }
         self.chatSettingsModule.updateWith(chat: chat)

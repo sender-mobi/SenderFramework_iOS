@@ -287,7 +287,7 @@ public class ChatBuilder: NSObject, ChatBuilderProtocol {
             /*
                 Group chats doesn't use chatState currently.
                 We won't receive state = removed after leaving chat or state = normal after joining.
-                That's why after chat updating we analyze at chat members and set chat as deleted,
+                That's why after chat updating we analyze chat members and set chat as deleted,
                 if there's no owner contact there.
                 We do this only if we've received members dictionary in chat info,
                 because it may be short chat info (like while syncing) and also

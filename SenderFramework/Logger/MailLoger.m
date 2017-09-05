@@ -7,7 +7,6 @@
 //
 
 #import "MailLoger.h"
-
 #import "CoreDataFacade.h"
 #import "ParamsFacade.h"
 

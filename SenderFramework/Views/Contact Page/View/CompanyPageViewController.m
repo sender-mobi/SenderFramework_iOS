@@ -4,7 +4,6 @@
 //
 
 #import "CompanyPageViewController.h"
-
 #import <SenderFramework/SenderFramework-Swift.h>
 #import "ServerFacade.h"
 #import "PBConsoleConstants.h"

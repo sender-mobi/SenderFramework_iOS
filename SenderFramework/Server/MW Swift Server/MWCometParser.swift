@@ -442,10 +442,6 @@ extension SenderCore: MWCometParserSoundPlayer {
             } else {
                 newMessage = self.messageWorker(regMsg, chat: chat)
             }
-
-            if newMessage != nil {
-                SenderCore.shared().interfaceUpdater.messagesWereChanged([newMessage!])
-            }
         } else if let type = regMsg["class"] as? String {
             switch type {
             case "text", "image", "audio", "file", "location", "sticker", "vibro", "video":
@@ -457,6 +453,9 @@ extension SenderCore: MWCometParserSoundPlayer {
             default:
                 break
             }
+        }
+        if let builtMessage = newMessage {
+            SenderCore.shared().interfaceUpdater.messagesWereChanged([builtMessage])
         }
 
         guard newMessage != nil else { return }

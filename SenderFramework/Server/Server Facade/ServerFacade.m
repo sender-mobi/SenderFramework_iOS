@@ -11,7 +11,6 @@
 
 #import "ServerFacade.h"
 #import "SenderRequestBuilder.h"
-
 #import "SenderNotifications.h"
 #import "AddressBook.h"
 #import "AudioRecorder.h"

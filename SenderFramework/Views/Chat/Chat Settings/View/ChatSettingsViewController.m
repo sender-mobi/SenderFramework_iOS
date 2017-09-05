@@ -9,7 +9,6 @@
 #import "ChatSettingsViewController.h"
 #import "CoreDataFacade.h"
 #import "ContactPageViewController.h"
-
 #import "PBConsoleConstants.h"
 #import "ParamsFacade.h"
 #import "DialogMembersViewController.h"

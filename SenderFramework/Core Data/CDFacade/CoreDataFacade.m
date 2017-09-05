@@ -17,7 +17,6 @@
 #import "File.h"
 #import "ParamsFacade.h"
 #import "FileManager.h"
-
 #import "ECCWorker.h"
 #import "DialogSetting.h"
 #import "BarModel.h"

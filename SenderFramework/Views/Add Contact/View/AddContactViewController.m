@@ -10,7 +10,6 @@
 #import "PBConsoleConstants.h"
 #import "NSString(common_addition).h"
 #import "ParamsFacade.h"
-
 #import <SenderFramework/SenderFramework-Swift.h>
 
 @interface AddContactViewController ()

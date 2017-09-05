@@ -12,7 +12,6 @@
 #import "SecGenerator.h"
 #import "SenderRequestBuilder.h"
 #import "NSString+WebService.h"
-
 #import "ServerFacade.h"
 #import <ifaddrs.h>
 #import <arpa/inet.h>
@@ -34,18 +33,18 @@ static CometController * controller;
     NSMutableArray * collectedSendQueue;
     NSMutableArray * visPushId;
     NSString * lastReceivedBatchID;
-
+    
     NSArray * dataForParse;
     
     BOOL cometRun;
     BOOL sendRun;
     BOOL dataRun;
-   
-//    NSURLSessionDataTask * sendDataTask;
-//    NSURLSessionDataTask * dataTask;
+    
+    //    NSURLSessionDataTask * sendDataTask;
+    //    NSURLSessionDataTask * dataTask;
     NSURLSessionDownloadTask * sendDataTask;
     NSURLSessionDownloadTask * dataTask;
-
+    
     NSOperationQueue * cometQueue;
     NSOperationQueue * sendQueue;
     NSOperationQueue * dataQueue;
@@ -60,7 +59,7 @@ static CometController * controller;
     int currentUnread;
     NSTimer * mainTimer;
     CometTransport * cometTransport;
-//    MWSendController * sCD;
+    //    MWSendController * sCD;
 }
 
 @property (nonatomic,strong) MWReachability * reachability;
@@ -94,9 +93,9 @@ static CometController * controller;
         sendQueue = [[NSOperationQueue alloc] init];
         [sendQueue setMaxConcurrentOperationCount:1];
         dataQueue = [[NSOperationQueue alloc] init];
-//        sCD = [[MWSendController alloc] init];
+        //        sCD = [[MWSendController alloc] init];
         lastReceivedBatchID = @"";
-
+        
         [self setupReachability];
         [self checkForReachability];
         cometRun = NO;
@@ -147,7 +146,7 @@ static CometController * controller;
         
         NSURLSessionConfiguration * config = [NSURLSessionConfiguration defaultSessionConfiguration];
         [config setAllowsCellularAccess:YES];
-
+        
         [config setHTTPAdditionalHeaders:@{@"Content-Encoding":@"gzip"}];
         [config setHTTPAdditionalHeaders:@{@"Accept":@"application/json"}];
         [config setHTTPAdditionalHeaders:@{@"Content-Type":@"application/json"}];
@@ -197,7 +196,7 @@ static CometController * controller;
         cometRun = NO;
         return NO;
     }
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{ [self removeConnectingView]; });
     isReachable = YES;
     cometRun = NO;
@@ -252,25 +251,25 @@ static CometController * controller;
 //    struct ifaddrs *interfaces = NULL;
 //    struct ifaddrs *temp_addr = NULL;
 //    int success = 0;
-//    
+//
 //    success = getifaddrs(&interfaces);
 //    if (success == 0) {
-//        
+//
 //        temp_addr = interfaces;
 //        while(temp_addr != NULL) {
 //            if(temp_addr->ifa_addr->sa_family == AF_INET) {
-//                
+//
 //                if ([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
-//                    
+//
 //                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
 //                }
 //            }
 //            temp_addr = temp_addr->ifa_next;
 //        }
 //    }
-//    
+//
 //    freeifaddrs(interfaces);
-//    
+//
 //    return address;
 //}
 
@@ -327,7 +326,7 @@ static CometController * controller;
     if (fileInfo.holder.urlParams) {
         [urlP addEntriesFromDictionary:fileInfo.holder.urlParams];
     }
-
+    
     if (fileInfo.cidID) {
         urlP[@"rid"] = fileInfo.cidID;
     }
@@ -386,7 +385,7 @@ static CometController * controller;
     if ([cometTransport stopComet]) {
         [cometTransport setCometBlocked:YES];
     }
-
+    
     [self startRegistrationFromCode];
 }
 
@@ -431,14 +430,17 @@ static CometController * controller;
 {
     if ([[CoreDataFacade sharedInstance] getOwner].aid) {
         [self justRun];
-        if (![SenderCore sharedCore].isInBackground  && ![SenderCore sharedCore].isPaused) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            [self runRequestQueue];
-            [self queueCoordinator];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                [cometTransport runForegroundComet];
+        if (![SenderCore sharedCore].isInBackground) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self runRequestQueue];
+                [self queueCoordinator];
+                if (![SenderCore sharedCore].isPaused)
+                {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                        [cometTransport runForegroundComet];
+                    });
+                }
             });
-         });
         }
     }
 }
@@ -455,12 +457,12 @@ static CometController * controller;
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
-//    if ([self shouldTrustProtectionSpace:challenge.protectionSpace]) {
-//        
-//        completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
-//    } else {
-//        completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
-//    }
+    //    if ([self shouldTrustProtectionSpace:challenge.protectionSpace]) {
+    //
+    //        completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+    //    } else {
+    //        completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
+    //    }
     completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);//
 }
 
@@ -477,7 +479,7 @@ static CometController * controller;
 - (BOOL)checkResponse:(NSURLResponse *)response andError:(NSError *)error
 {
     //NLog(@"DATA FROM SERVER (%lu) %@\nRESPONSE CODE: %li", 1,@{}/*response*/, [(NSHTTPURLResponse *)response statusCode]);
-
+    
     if (response && ([response class] == [NSHTTPURLResponse class])) {
         int httpStatusCode = (int)[(NSHTTPURLResponse *)response  statusCode];
         
@@ -485,8 +487,8 @@ static CometController * controller;
             return YES;
         }
         else {
-//            [[LogerDBController sharedCore] addLogEvent:@{@"event":@"Can`t resolve server",@"Server response:":[NSString stringWithFormat:@"%@",response]}];
-//            
+            //            [[LogerDBController sharedCore] addLogEvent:@{@"event":@"Can`t resolve server",@"Server response:":[NSString stringWithFormat:@"%@",response]}];
+            //
             [[SenderRequestBuilder sharedInstance] changeServerURL];
         }
     }
@@ -494,7 +496,7 @@ static CometController * controller;
         
         LLog(@"NO CONNECTION");
     }
-
+    
     return NO;
 }
 
@@ -520,106 +522,106 @@ static CometController * controller;
     }
     
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-
+        
         NSURLRequest * request = [self buildRequestWithFileInfo:fileInfo];
         dataTask = [[self sendSession] downloadTaskWithRequest:request
                                              completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            NSData * data;
-            
-            if (location) {
-                data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
-            }
-
-            dataRun = NO;
-            [requestQueue removeObject:fileInfo];
-            fileInfo.isDownloading = NO;
-            
-            LLog(@"\n==================== SIMPLE TASK ID = %@ STOP \n=========================================\n WITH RESP %@\n ============== \n WITH ERROR %@",fileInfo.cidID,response,error);
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                  
-                  if (![self checkResponse:response andError:error]) {
-                      if (fileInfo.holder.completionHandler)
-                          fileInfo.holder.completionHandler(nil, error);
-                      [requestQueue addObject:fileInfo];
-                      
-                      [self runRequestQueue];
-                      return;
-                  }
-                
-                if(data)
-                {
-                    NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                    NSDictionary * resultDictionary = [result JSON];
-
-                    NLog(@"DATA FROM SERVER (%lu_%p) %@\nRESPONSE CODE: %li", request.hash, &request, result, [(NSHTTPURLResponse *)response statusCode]);
-                    LLog(@"\n ============== SIMPLE TASK ID = %@ VALID \n  %@",fileInfo.cidID,resultDictionary);
-                    
-                    if (resultDictionary && [resultDictionary[@"code"] integerValue] == 0) {
-                
-                            if (fileInfo.holder.completionHandler) {
-                                fileInfo.holder.completionHandler(resultDictionary, nil);
-                            }
-                            [self runRequestQueue];
-                    }
-                    else if (resultDictionary && ([resultDictionary[@"code"] integerValue] == 10 || [resultDictionary[@"code"] integerValue] == 9)) {
-                        [requestQueue removeObject:fileInfo];
-                        if (fileInfo.holder.completionHandler) {
-                            fileInfo.holder.completionHandler(resultDictionary, nil);
-                        }
-                        [self runRequestQueue];
-                    }
-                    else if (!resultDictionary || resultDictionary[@"code"] == [NSNull null]) {
-                       
-                            [requestQueue addObject:fileInfo];
-                            
-                            [self runRequestQueue];
-                    }
-                    else if (resultDictionary && [resultDictionary[@"code"] integerValue] == 2) {
-                         [requestQueue removeObject:fileInfo];
-                            if (fileInfo.holder.completionHandler) {
-                                fileInfo.holder.completionHandler(resultDictionary, nil);
-                            }
-                        [self runRequestQueue];
-
-                    }
-                    else if (![self checkVersionResponse:resultDictionary]) {
-                        
-                        if ([fileInfo.holder.path isEqualToString:kRegPath] ||
-                            [fileInfo.holder.path isEqualToString:kAuthPhonePath] ||
-                            [fileInfo.holder.path isEqualToString:@"sync_ct"] ||
-                            [fileInfo.holder.path isEqualToString:@"sync_dlg"])
-                        {
-                            [self createRequest:fileInfo];
-                            return;
-                        }
-                        
-                        if ([resultDictionary[@"code"] integerValue] != 14 && [resultDictionary[@"code"] integerValue] != 10 && [resultDictionary[@"code"] integerValue] != 3) {
-                            [requestQueue addObject:fileInfo];
-                        }
-                        
-                        return;
-                    }
-                    else {
-                        return;
-                    }
-                }
-                else if (error.code == NSURLErrorCancelled) {
-                    return;
-                }
-                else {
-                    
-                    if ([fileInfo.holder.path isEqualToString:@"reg_light"]) {
-                        [requestQueue addObject:fileInfo];
-                    }
-
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                        [self runRequestQueue];
-                    });
-                }               
-           });
-
-        }];
+                                                 NSData * data;
+                                                 
+                                                 if (location) {
+                                                     data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
+                                                 }
+                                                 
+                                                 dataRun = NO;
+                                                 [requestQueue removeObject:fileInfo];
+                                                 fileInfo.isDownloading = NO;
+                                                 
+                                                 LLog(@"\n==================== SIMPLE TASK ID = %@ STOP \n=========================================\n WITH RESP %@\n ============== \n WITH ERROR %@",fileInfo.cidID,response,error);
+                                                 
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     
+                                                     if (![self checkResponse:response andError:error]) {
+                                                         if (fileInfo.holder.completionHandler)
+                                                             fileInfo.holder.completionHandler(nil, error);
+                                                         [requestQueue addObject:fileInfo];
+                                                         
+                                                         [self runRequestQueue];
+                                                         return;
+                                                     }
+                                                     
+                                                     if(data)
+                                                     {
+                                                         NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                         NSDictionary * resultDictionary = [result JSON];
+                                                         
+                                                         NLog(@"DATA FROM SERVER (%lu_%p) %@\nRESPONSE CODE: %li", request.hash, &request, result, [(NSHTTPURLResponse *)response statusCode]);
+                                                         LLog(@"\n ============== SIMPLE TASK ID = %@ VALID \n  %@",fileInfo.cidID,resultDictionary);
+                                                         
+                                                         if (resultDictionary && [resultDictionary[@"code"] integerValue] == 0) {
+                                                             
+                                                             if (fileInfo.holder.completionHandler) {
+                                                                 fileInfo.holder.completionHandler(resultDictionary, nil);
+                                                             }
+                                                             [self runRequestQueue];
+                                                         }
+                                                         else if (resultDictionary && ([resultDictionary[@"code"] integerValue] == 10 || [resultDictionary[@"code"] integerValue] == 9)) {
+                                                             [requestQueue removeObject:fileInfo];
+                                                             if (fileInfo.holder.completionHandler) {
+                                                                 fileInfo.holder.completionHandler(resultDictionary, nil);
+                                                             }
+                                                             [self runRequestQueue];
+                                                         }
+                                                         else if (!resultDictionary || resultDictionary[@"code"] == [NSNull null]) {
+                                                             
+                                                             [requestQueue addObject:fileInfo];
+                                                             
+                                                             [self runRequestQueue];
+                                                         }
+                                                         else if (resultDictionary && [resultDictionary[@"code"] integerValue] == 2) {
+                                                             [requestQueue removeObject:fileInfo];
+                                                             if (fileInfo.holder.completionHandler) {
+                                                                 fileInfo.holder.completionHandler(resultDictionary, nil);
+                                                             }
+                                                             [self runRequestQueue];
+                                                             
+                                                         }
+                                                         else if (![self checkVersionResponse:resultDictionary]) {
+                                                             
+                                                             if ([fileInfo.holder.path isEqualToString:kRegPath] ||
+                                                                 [fileInfo.holder.path isEqualToString:kAuthPhonePath] ||
+                                                                 [fileInfo.holder.path isEqualToString:@"sync_ct"] ||
+                                                                 [fileInfo.holder.path isEqualToString:@"sync_dlg"])
+                                                             {
+                                                                 [self createRequest:fileInfo];
+                                                                 return;
+                                                             }
+                                                             
+                                                             if ([resultDictionary[@"code"] integerValue] != 14 && [resultDictionary[@"code"] integerValue] != 10 && [resultDictionary[@"code"] integerValue] != 3) {
+                                                                 [requestQueue addObject:fileInfo];
+                                                             }
+                                                             
+                                                             return;
+                                                         }
+                                                         else {
+                                                             return;
+                                                         }
+                                                     }
+                                                     else if (error.code == NSURLErrorCancelled) {
+                                                         return;
+                                                     }
+                                                     else {
+                                                         
+                                                         if ([fileInfo.holder.path isEqualToString:@"reg_light"]) {
+                                                             [requestQueue addObject:fileInfo];
+                                                         }
+                                                         
+                                                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                                                             [self runRequestQueue];
+                                                         });
+                                                     }
+                                                 });
+                                                 
+                                             }];
         
         LLog(@"\n==================== SIMPLE TASK ID = %@ START", fileInfo.cidID);
         
@@ -638,7 +640,7 @@ static CometController * controller;
         fileInfo.isDownloading = YES;
         
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-
+            
             sendDataTask = [[self sendSession] downloadTaskWithRequest:[self buildRequestWithFileInfo:fileInfo] completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 NSData * data;
                 
@@ -648,65 +650,65 @@ static CometController * controller;
                 
                 LLog(@"\n==================== SEND TASK ID = %@ STOP \т===================================================\n WITH RESP %@\n ============== \n WITH ERROR %@",fileInfo.cidID,response,error);
                 
-                 sendRun = NO;
+                sendRun = NO;
                 
-                 fileInfo.isDownloading = NO;
-                 
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     
-                     if (![self checkResponse:response andError:error]) {
-                         if (fileInfo.holder.completionHandler)
-                             fileInfo.holder.completionHandler(nil, error);
-                         sendRun = NO;
-                         [self queueCoordinator];
-                         return;
-                     }
+                fileInfo.isDownloading = NO;
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
                     
-                     if (data)
-                     {
-                         NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                         NSDictionary * resultDictionary = [result JSON];
-                         
-                         LLog(@"\n ============== SEND TASK ID = %@ VALID \n  %@",fileInfo.cidID,resultDictionary);
-                         
-                         if (resultDictionary && [resultDictionary[@"code"] integerValue] == 0) {
-                             [mainDataQueue removeObjectForKey:fileInfo.cidID];
-                             if (fileInfo.holder.completionHandler) {
-                                 fileInfo.holder.completionHandler(resultDictionary, nil);
-                             }
-                             [self queueCoordinator];
-                         }
-                         else if (!resultDictionary || resultDictionary[@"code"] == [NSNull null]) {
-                             
-                             [mainDataQueue removeObjectForKey:fileInfo.cidID];
-                             [mainDataQueue setObject:fileInfo forKey:fileInfo.cidID];
-                             [self queueCoordinator];
-                         }
-                         else if (resultDictionary && [resultDictionary[@"code"] integerValue] == 10) {
-                             [mainDataQueue removeObjectForKey:fileInfo.cidID];
-
-                             if (fileInfo.holder.completionHandler) {
-                                 fileInfo.holder.completionHandler(resultDictionary, nil);
-                             }
-                             [self queueCoordinator];
-                         }
-                         else { return; }
-                     }
-                     else if (error.code == NSURLErrorCancelled) {
-                         sendRun = NO;
-                         return;
-                     }
-                     else {
-                         
-                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                             sendRun = NO;
-                             [self queueCoordinator];
-                         });
-                     }
+                    if (![self checkResponse:response andError:error]) {
+                        if (fileInfo.holder.completionHandler)
+                            fileInfo.holder.completionHandler(nil, error);
+                        sendRun = NO;
+                        [self queueCoordinator];
+                        return;
+                    }
+                    
+                    if (data)
+                    {
+                        NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        NSDictionary * resultDictionary = [result JSON];
+                        
+                        LLog(@"\n ============== SEND TASK ID = %@ VALID \n  %@",fileInfo.cidID,resultDictionary);
+                        
+                        if (resultDictionary && [resultDictionary[@"code"] integerValue] == 0) {
+                            [mainDataQueue removeObjectForKey:fileInfo.cidID];
+                            if (fileInfo.holder.completionHandler) {
+                                fileInfo.holder.completionHandler(resultDictionary, nil);
+                            }
+                            [self queueCoordinator];
+                        }
+                        else if (!resultDictionary || resultDictionary[@"code"] == [NSNull null]) {
+                            
+                            [mainDataQueue removeObjectForKey:fileInfo.cidID];
+                            [mainDataQueue setObject:fileInfo forKey:fileInfo.cidID];
+                            [self queueCoordinator];
+                        }
+                        else if (resultDictionary && [resultDictionary[@"code"] integerValue] == 10) {
+                            [mainDataQueue removeObjectForKey:fileInfo.cidID];
+                            
+                            if (fileInfo.holder.completionHandler) {
+                                fileInfo.holder.completionHandler(resultDictionary, nil);
+                            }
+                            [self queueCoordinator];
+                        }
+                        else { return; }
+                    }
+                    else if (error.code == NSURLErrorCancelled) {
+                        sendRun = NO;
+                        return;
+                    }
+                    else {
+                        
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                            sendRun = NO;
+                            [self queueCoordinator];
+                        });
+                    }
                 });
-                 
-             }];
-
+                
+            }];
+            
             LLog(@"\n==================== SEND TASK ID = %@ START", fileInfo.cidID);
             
             [sendDataTask resume];
@@ -722,23 +724,26 @@ static CometController * controller;
     NSError * error;
     NSError * requestError;
     NSURLResponse * urlResponse = nil;
-
+    
     NSData * data = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
     
     if (!data) {
-        
         return nil;
     }
-
+    
     return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
 }
 
 - (void)cometRestart
 {
-    if (![SenderCore sharedCore].isInBackground && ![SenderCore sharedCore].isPaused) {
-        [cometTransport runForegroundComet];
+    if (![SenderCore sharedCore].isInBackground)
+    {
         [self runRequestQueue];
         [self queueCoordinator];
+        if (![SenderCore sharedCore].isPaused)
+        {
+            [cometTransport runForegroundComet];
+        }
     }
 }
 
@@ -764,9 +769,9 @@ static CometController * controller;
     }
     
     @synchronized(mainDataQueue) {
-    
-        if (mainDataQueue.count) {
         
+        if (mainDataQueue.count) {
+            
             NSArray * arr =  [[mainDataQueue allKeys] sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
             FileDownloadInfo * fdi = mainDataQueue[[arr firstObject]];
             
@@ -784,12 +789,12 @@ static CometController * controller;
     }
     
     if (collectedSendQueue.count && [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            for (RequestHolder * hTemp in collectedSendQueue) {
-                [self addMessageToQueue:(NSDictionary *) hTemp.postData getParams:nil withUrlPath:hTemp.path withCompletionHolder:hTemp.completionHandler];
-            }
-            
-            [collectedSendQueue removeAllObjects];
-            collectedSendQueue = [NSMutableArray new];
+        for (RequestHolder * hTemp in collectedSendQueue) {
+            [self addMessageToQueue:(NSDictionary *) hTemp.postData getParams:nil withUrlPath:hTemp.path withCompletionHolder:hTemp.completionHandler];
+        }
+        
+        [collectedSendQueue removeAllObjects];
+        collectedSendQueue = [NSMutableArray new];
     }
     
     if (requestQueue.count) {
@@ -806,34 +811,34 @@ static CometController * controller;
               withUrlPath:(NSString *)path
      withCompletionHolder:(SenderRequestCompletionHandler)completionHolder
 {
-//    MWSessionWorker * sW = [[MWSessionWorker alloc] init];
-//    [sW runTest];
-//    return;
+    //    MWSessionWorker * sW = [[MWSessionWorker alloc] init];
+    //    [sW runTest];
+    //    return;
     
     if (path) {
-
+        
         NSMutableDictionary * postWithDict = nil;
-
+        
         if ([path isEqualToString:kSendPath]) {
-
+            
             postWithDict =  [[NSMutableDictionary alloc] initWithDictionary:@{@"fs":@""}];
-
+            
             if (postData) {
-
+                
                 NSMutableDictionary * postAddons =  [[NSMutableDictionary alloc] initWithDictionary:postData];
                 [postAddons setObject:[NSString stringWithFormat:@"%.0f", ([[NSDate date] timeIntervalSince1970] * 10000000)] forKey:@"cid"];
                 postWithDict[@"fs"] = @[postAddons];
-
+                
                 RequestHolder * holder = [[RequestHolder alloc] initWithPath:path
                                                                    urlParams:getParams
                                                                     postData:postWithDict
                                                            completionHandler:completionHolder];
-
+                
                 FileDownloadInfo * fdi = [[FileDownloadInfo alloc] initWithRequestHolder:holder];
                 fdi.cidID = postAddons[@"cid"];
                 [mainDataQueue setObject:fdi forKey:fdi.cidID];
                 [self queueCoordinator];
-
+                
                 return;
             }
             else {
@@ -841,42 +846,42 @@ static CometController * controller;
             }
         }
         else {
-
+            
             if (postData) {
                 postWithDict = [[NSMutableDictionary alloc] initWithDictionary:postData];
             }
-
+            
             RequestHolder * holder = [[RequestHolder alloc] initWithPath:path
                                                                urlParams:getParams
                                                                 postData:postWithDict
                                                        completionHandler:completionHolder];
-
+            
             FileDownloadInfo * fdi = [[FileDownloadInfo alloc] initWithRequestHolder:holder];
-
+            
             if ([path isEqualToString:kRegPath] || [path isEqualToString:kSyncContactsPath] || [path isEqualToString:kSyncDialogsPath]) {
                 isReachable = YES;
                 [self createRequest:fdi];
             }
             else {
-
+                
                 if ([path isEqualToString:kRegLightPath]) {
                     isReachable = YES;
                 }
-
+                
                 [requestQueue addObject:fdi];
-
+                
                 [self runRequestQueue];
             }
-
+            
             return;
         }
     }
     else {
-
+        
         NSMutableDictionary * postWithDict =  [[NSMutableDictionary alloc] initWithDictionary:@{@"fs":@""}];
-
+        
         if (postData) {
-
+            
             if ([postData[@"formId"] isEqualToString:@"text"] ||
                 [postData[@"formId"] isEqualToString:@"image"] ||
                 [postData[@"formId"] isEqualToString:@"file"] ||
@@ -887,12 +892,12 @@ static CometController * controller;
                 [postData[@"formId"] isEqualToString:@"kickass"])
             {
                 NSMutableDictionary * postAddons =  [[NSMutableDictionary alloc] initWithDictionary:postData];
-
+                
                 [postAddons setObject:[NSString stringWithFormat:@"%.0f", ([[NSDate date] timeIntervalSince1970] * 10000000)] forKey:@"cid"];
                 postWithDict[@"fs"] = @[postAddons];
-
+                
                 NSString * urlPath = kSendPath;
-
+                
                 RequestHolder * holder = [[RequestHolder alloc] initWithPath:kSendPath
                                                                    urlParams:getParams
                                                                     postData:postWithDict
@@ -911,12 +916,12 @@ static CometController * controller;
                                                                    urlParams:getParams
                                                                     postData:postWithDict
                                                            completionHandler:completionHolder];
-
+                
                 FileDownloadInfo * fdi = [[FileDownloadInfo alloc] initWithRequestHolder:holder];
                 [requestQueue addObject:fdi];
-
+                
                 [self runRequestQueue];
-
+                
                 return;
             }
         }
@@ -928,9 +933,9 @@ static CometController * controller;
       withCompletionHolder:(SenderRequestCompletionHandler)completionHolder
 {
     RequestHolder * backHolder = [[RequestHolder alloc] initWithPath:path
-                                                       urlParams:nil
-                                                        postData:postData
-                                               completionHandler:completionHolder];
+                                                           urlParams:nil
+                                                            postData:postData
+                                                   completionHandler:completionHolder];
     
     [collectedSendQueue addObject:backHolder];
 }
@@ -939,7 +944,7 @@ static CometController * controller;
               withUrlPath:(NSString *)path
      withCompletionHolder:(SenderRequestCompletionHandler)completionHolder
 {
-//    [sCD addQueueRequest:path postData:postData completionHolder:completionHolder];
+    //    [sCD addQueueRequest:path postData:postData completionHolder:completionHolder];
     [self addMessageToQueue:postData getParams:nil withUrlPath:path withCompletionHolder:completionHolder];
 }
 
@@ -958,7 +963,7 @@ static CometController * controller;
 - (void)createDirectRequest:(RequestHolder *)holder
 {
     FileDownloadInfo * fdi = [[FileDownloadInfo alloc] initWithRequestHolder:holder];
-
+    
     dataRun = YES;
     if (fdi.taskIdentifier == -1)
         [self createRequest:fdi];
@@ -975,23 +980,23 @@ static CometController * controller;
     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:30];
     
     NSURLSessionDataTask * httpTask = [[self regularSession] dataTaskWithRequest:request
-                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                             if (error) {
-                                                 LLog(@"ERROR online key");
-                                             }
-         if (completionHolder) {
-             if (!error) {
-                 
-                 NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                 NSDictionary * resultDictionary = [result JSON];
-                 
-                 completionHolder(resultDictionary,nil);
-             }
-             else {
-                 completionHolder(nil,nil);
-             }
-        }
-     }];
+                                                               completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                                   if (error) {
+                                                                       LLog(@"ERROR online key");
+                                                                   }
+                                                                   if (completionHolder) {
+                                                                       if (!error) {
+                                                                           
+                                                                           NSString * result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                                           NSDictionary * resultDictionary = [result JSON];
+                                                                           
+                                                                           completionHolder(resultDictionary,nil);
+                                                                       }
+                                                                       else {
+                                                                           completionHolder(nil,nil);
+                                                                       }
+                                                                   }
+                                                               }];
     [httpTask resume];
 }
 

@@ -11,7 +11,6 @@
 #import "SenderRequestBuilder.h"
 #import "CometController.h"
 
-
 static CometBackgroundManager * controller;
 
 @implementation CometBackgroundManager
